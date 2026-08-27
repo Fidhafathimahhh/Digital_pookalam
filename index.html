@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pookkalam</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f5e8cf;
+        overflow: hidden;
+    }
+
+    canvas {
+        width: min(96vw, 850px);
+        height: min(96vw, 850px);
+        max-height: 96vh;
+        max-width: 96vh;
+        display: block;
+        filter: drop-shadow(0 18px 25px rgba(70, 20, 0, 0.25));
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="pookkalam" width="1000" height="1000"></canvas>
+
+<script>
+const canvas = document.getElementById("pookkalam");
+const ctx = canvas.getContext("2d");
+
+const cx = 500;
+const cy = 500;
+const PI2 = Math.PI * 2;
+
+/* =========================
+   BASIC FUNCTIONS
+========================= */
+
+function circle(r, color) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, PI2);
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
+function strokeCircle(r, width, color) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, PI2);
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+}
+
+function ellipse(x, y, w, h, angle, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, w, h, 0, 0, PI2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+}
+
+function diamond(angle, distance, size, color) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.beginPath();
+    ctx.moveTo(0, -distance - size);
+    ctx.lineTo(size, -distance);
+    ctx.lineTo(0, -distance + size);
+    ctx.lineTo(-size, -distance);
+    ctx.closePath();
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function square(angle, distance, size, color) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.fillStyle = color;
+    ctx.fillRect(
+        -size / 2,
+        -distance - size / 2,
+        size,
+        size
+    );
+
+    ctx.restore();
+}
+
+/* =========================
+   OUTER CIRCULAR BORDERS
+========================= */
+
+circle(490, "#0b722d");
+circle(478, "#d10000");
+circle(468, "#ffd21a");
+circle(456, "#086b2b");
+
+strokeCircle(442, 2, "#8fc989");
+
+/* =========================
+   OUTER RED FLOWER RING
+========================= */
+
+circle(405, "#e00000");
+
+for (let i = 0; i < 72; i++) {
+    const angle = PI2 * i / 72;
+    const r = 395;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    const color =
+        i % 3 === 0 ? "#ffd11a" :
+        i % 3 === 1 ? "#e00000" :
+        "#087a34";
+
+    ellipse(
+        x,
+        y,
+        16,
+        48,
+        angle + Math.PI / 2,
+        color
+    );
+}
+
+/* =========================
+   GOLD INNER BORDER
+========================= */
+
+circle(370, "#ffd11a");
+circle(350, "#e30000");
+
+/* =========================
+   LARGE YELLOW DIAMOND RING
+========================= */
+
+for (let i = 0; i < 12; i++) {
+    const angle = PI2 * i / 12;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    /* Large yellow diamond */
+    ctx.beginPath();
+    ctx.moveTo(0, -350);
+    ctx.lineTo(45, -305);
+    ctx.lineTo(0, -260);
+    ctx.lineTo(-45, -305);
+    ctx.closePath();
+    ctx.fillStyle = "#ffd21a";
+    ctx.fill();
+
+    /* Inner red diamond */
+    ctx.beginPath();
+    ctx.moveTo(0, -328);
+    ctx.lineTo(22, -305);
+    ctx.lineTo(0, -282);
+    ctx.lineTo(-22, -305);
+    ctx.closePath();
+    ctx.fillStyle = "#d50000";
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================
+   YELLOW LEAF DECORATION
+========================= */
+
+for (let i = 0; i < 24; i++) {
+    const angle = PI2 * i / 24;
+    const r = 365;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ellipse(
+        x,
+        y,
+        15,
+        42,
+        angle + Math.PI / 2,
+        i % 2 === 0 ? "#ffd51a" : "#087b34"
+    );
+}
+
+/* =========================
+   GREEN AND WHITE SPIKE RING
+========================= */
+
+for (let i = 0; i < 64; i++) {
+    const angle = PI2 * i / 64;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.beginPath();
+    ctx.moveTo(0, -260);
+    ctx.lineTo(9, -220);
+    ctx.lineTo(-9, -220);
+    ctx.closePath();
+
+    ctx.fillStyle =
+        i % 2 === 0 ? "#ffffff" : "#078038";
+
+    ctx.fill();
+    ctx.restore();
+}
+
+/* =========================
+   DARK RED INNER BASE
+========================= */
+
+circle(220, "#8c0808");
+
+/* =========================
+   OUTER FLOWER PETALS
+========================= */
+
+for (let i = 0; i < 24; i++) {
+    const angle = PI2 * i / 24;
+    const r = 200;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ellipse(
+        x,
+        y,
+        30,
+        100,
+        angle + Math.PI / 2,
+        i % 4 === 0 ? "#f0f0e8" :
+        i % 4 === 1 ? "#e70000" :
+        i % 4 === 2 ? "#ffc400" :
+        "#ffffff"
+    );
+}
+
+/* =========================
+   SECOND FLOWER LAYER
+========================= */
+
+for (let i = 0; i < 16; i++) {
+    const angle = PI2 * i / 16 + 0.1;
+    const r = 150;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ellipse(
+        x,
+        y,
+        34,
+        95,
+        angle + Math.PI / 2,
+        i % 3 === 0 ? "#ffbd00" :
+        i % 3 === 1 ? "#e50000" :
+        "#fff8e8"
+    );
+}
+
+/* =========================
+   INNER RED FLOWER
+========================= */
+
+circle(120, "#d70000");
+
+for (let i = 0; i < 12; i++) {
+    const angle = PI2 * i / 12;
+    const r = 105;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ellipse(
+        x,
+        y,
+        28,
+        82,
+        angle + Math.PI / 2,
+        i % 2 === 0 ? "#ffd11a" : "#ffffff"
+    );
+}
+
+/* =========================
+   CENTRAL FLOWER DESIGN
+========================= */
+
+circle(88, "#ffcf00");
+
+for (let i = 0; i < 12; i++) {
+    const angle = PI2 * i / 12;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-13, -82);
+    ctx.lineTo(13, -82);
+    ctx.closePath();
+
+    ctx.fillStyle =
+        i % 2 === 0 ? "#e50000" : "#ff7800";
+
+    ctx.fill();
+    ctx.restore();
+}
+
+/* =========================
+   CENTER
+========================= */
+
+circle(28, "#d40000");
+circle(15, "#ffd21a");
+
+/* =========================
+   SMALL GOLDEN DOTS
+========================= */
+
+for (let i = 0; i < 16; i++) {
+    const angle = PI2 * i / 16;
+    const r = 165;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 7, 0, PI2);
+    ctx.fillStyle = "#ffd21a";
+    ctx.fill();
+}
+
+/* =========================
+   DECORATIVE INNER GREEN LEAVES
+========================= */
+
+for (let i = 0; i < 32; i++) {
+    const angle = PI2 * i / 32;
+    const r = 250;
+
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+
+    ellipse(
+        x,
+        y,
+        12,
+        40,
+        angle + Math.PI / 2,
+        "#087a34"
+    );
+}
+</script>
+
+</body>
+</html>
